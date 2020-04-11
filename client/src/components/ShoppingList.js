@@ -3,7 +3,11 @@ import {
   ListGroup,
   ListGroupItem,
   Button,
-  Spinner
+  Spinner,
+  Badge,
+  Col,
+  Card,
+  CardBody
 } from 'reactstrap'
 import {
   CSSTransition,
@@ -17,6 +21,12 @@ import {
 import PropTypes from 'prop-types'
 
 class ShoppingList extends Component {
+  static propTypes = {
+    getItems: PropTypes.func.isRequired,
+    item: PropTypes.object.isRequired,
+    isAuthenticated: PropTypes.bool
+  }
+
   componentDidMount() {
     this.props.getItems()
   }
@@ -29,50 +39,59 @@ class ShoppingList extends Component {
     const { items, loading } = this.props.item
 
     return (
-      <ListGroup>
-        {loading ? (
-          <div className='d-flex justify-content-center'>
-            <Spinner color='danger' />
-          </div>
-        ) : (
-          <div></div>
-        )}
+      <Col md='8'>
+        <Card>
+          <CardBody>
+            <Badge color='info' pill>
+              My Shopping List{' '}
+              <i className='fas fa-shopping-cart'></i>
+            </Badge>
 
-        <TransitionGroup className='shopping-list'>
-          {items.map(({ _id, name }) => (
-            <CSSTransition
-              key={_id}
-              timeout={500}
-              classNames='fade'
-            >
-              <ListGroupItem>
-                <Button
-                  className='remove-btn'
-                  color='danger'
-                  size='sm'
-                  onClick={() =>
-                    this.onDeleteClick(_id)
-                  }
-                >
-                  &times;
-                </Button>
-                {name}
-              </ListGroupItem>
-            </CSSTransition>
-          ))}
-        </TransitionGroup>
-      </ListGroup>
+            <ListGroup className='bd-callout bd-callout-info'>
+              {loading ? (
+                <div className='d-flex justify-content-center'>
+                  <Spinner color='info' />
+                </div>
+              ) : (
+                <div></div>
+              )}
+
+              <TransitionGroup className='shopping-list'>
+                {items.map(({ _id, name }) => (
+                  <CSSTransition
+                    key={_id}
+                    timeout={500}
+                    classNames='fade'
+                  >
+                    <ListGroupItem className='clearfix'>
+                      {name}
+                      {this.props.isAuthenticated ? (
+                        <Button
+                          className='remove-btn float-right'
+                          color='danger'
+                          size='sm'
+                          onClick={() =>
+                            this.onDeleteClick(_id)
+                          }
+                        >
+                          &times;
+                        </Button>
+                      ) : null}
+                    </ListGroupItem>
+                  </CSSTransition>
+                ))}
+              </TransitionGroup>
+            </ListGroup>
+          </CardBody>
+        </Card>
+      </Col>
     )
   }
 }
 
-ShoppingList.propTypes = {
-  getItems: PropTypes.func.isRequired,
-  item: PropTypes.object.isRequired
-}
-
 const mapStateToProps = state => ({
-  item: state.item
+  item: state.item,
+  isAuthenticated: state.auth.isAuthenticated
 })
 
 export default connect(mapStateToProps, {

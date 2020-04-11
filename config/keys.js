@@ -1,4 +1,0 @@
-module.exports = {
-  mongoURI:
-    'mongodb+srv://Evan:wanipira1111@cluster0-hohuj.gcp.mongodb.net/test?retryWrites=true&w=majority'
-}

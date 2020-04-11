@@ -1,16 +1,17 @@
 import React, { Component } from 'react'
 import {
   Button,
-  Modal,
-  ModalHeader,
-  ModalBody,
   Form,
   FormGroup,
-  Label,
-  Input
+  Input,
+  Col,
+  Card,
+  CardBody
 } from 'reactstrap'
 import { connect } from 'react-redux'
 import { addItem } from '../actions/itemActions'
+import PropTypes from 'prop-types'
+import PleaseLogin from './PleaseLogin'
 
 class ItemModal extends Component {
   state = {
@@ -18,10 +19,9 @@ class ItemModal extends Component {
     name: ''
   }
 
-  toggle = () => {
-    this.setState({
-      modal: !this.state.modal
-    })
+  static propTypes = {
+    isAuthenticated: PropTypes.bool,
+    auth: PropTypes.object.isRequired
   }
 
   onChange = e => {
@@ -39,57 +39,58 @@ class ItemModal extends Component {
 
     // Add Item via addItem action
     this.props.addItem(newItem)
-    // Close modal
-    this.toggle()
+    // Clear Form
+    document.getElementById('add-item-form').reset()
   }
 
   render() {
+    const { user } = this.props.auth
     return (
-      <React.Fragment>
-        <Button
-          color='dark'
-          style={{ marginBottom: '2rem' }}
-          onClick={this.toggle}
-        >
-          Add Item
-        </Button>
-
-        <Modal
-          isOpen={this.state.modal}
-          toggle={this.toggle}
-        >
-          <ModalHeader toggle={this.toggle}>
-            Add To Shopping List
-          </ModalHeader>
-          <ModalBody>
-            <Form onSubmit={this.onSubmit}>
-              <FormGroup>
-                <Label for='item'>Item</Label>
-                <Input
-                  type='text'
-                  name='name'
-                  id='item'
-                  placeholder='Add Shopping Item'
-                  onChange={this.onChange}
-                />
-              </FormGroup>
-              <Button
-                color='dark'
-                style={{ marginTop: '2rem' }}
-                block
+      <Col md='4'>
+        <Card>
+          <CardBody>
+            {this.props.isAuthenticated ? (
+              <Form
+                onSubmit={this.onSubmit}
+                id='add-item-form'
               >
-                Add Item
-              </Button>
-            </Form>
-          </ModalBody>
-        </Modal>
-      </React.Fragment>
+                <FormGroup>
+                  <h3 className='text-center'>
+                    Welcome, {user.name}!
+                  </h3>
+                  <Input
+                    type='text'
+                    name='name'
+                    id='item'
+                    placeholder='Item Name'
+                    onChange={this.onChange}
+                    className='mt-4'
+                  />
+                  <Button
+                    color='secondary'
+                    block
+                    className='mt-2 mb-4'
+                  >
+                    Add Item
+                  </Button>
+                </FormGroup>
+              </Form>
+            ) : (
+              <PleaseLogin />
+            )}
+          </CardBody>
+        </Card>
+      </Col>
     )
   }
 }
 
-const mapStateToProps = state => ({ item: state.item })
+const mapStateToProps = state => ({
+  item: state.item,
+  isAuthenticated: state.auth.isAuthenticated,
+  auth: state.auth
+})
 
-export default connect(mapStateToProps, { addItem })(
-  ItemModal
-)
+export default connect(mapStateToProps, {
+  addItem
+})(ItemModal)

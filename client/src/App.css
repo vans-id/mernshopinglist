@@ -1,3 +1,7 @@
+body {
+  min-height: 85vh;
+}
+
 .remove-btn {
   margin-right: 0.5rem;
 }
@@ -18,4 +22,40 @@
 .fade-exit-active {
   opacity: 0.01;
   transition: opacity 1000ms ease-out;
+}
+
+.bd-callout {
+  margin-top: 1.25rem;
+  margin-bottom: 1.25rem;
+  border-left: 1px solid #eee;
+  border-left-width: 0.25rem;
+  border-radius: 0.25rem;
+}
+
+.bd-callout-info {
+  border-left-color: #17a2b8;
+}
+
+.header {
+  min-height: 310px;
+  background-image: url('./images/grocery.png');
+  background-size: cover;
+}
+
+.content {
+  margin-top: -120px;
+}
+
+.pleaseLogin {
+  min-height: 150px;
+}
+
+.card-content {
+  border-radius: 11px;
+}
+
+.footer {
+  background-color: #17a2b8;
+  color: #fff;
+  margin-top: 50px;
 }
